@@ -1,0 +1,39 @@
+# Virtual environments
+.venv/
+venv/
+env/
+.env
+
+# Python cache
+pycache/
+*.pyo
+*.pyd
+*.pic
+__pycache__/
+
+# Logs
+logs/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.temp
+
+# Build / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Ruff cache
+.ruff_cache/
+
+# Databases (local)
+*.db
+*.sqlite3
