@@ -3,48 +3,41 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete
 
-from app.schemas.chat import ChatResponse
-from app.db.models import ChatMessage, User
+from app.db.models import ChatMessage
 
 class ChatMessagesStorage:
     def __init__(self, db: AsyncSession):
         self._db = db 
     
-    def _to_response(self, chat_message: ChatMessage) -> ChatResponse:
-        return ChatResponse(
-            answer=chat_message.content
-        )
-    
     async def add_message(
             self, 
-            user: User, 
-            message_data: dict[str, str]
-            ) -> ChatResponse:
+            user_id: int, 
+            role: str,
+            content: str
+            ) -> ChatMessage:
         message = ChatMessage(
-            user_id=user.id,
-            role=message_data["role"],
-            content=message_data["content"]
+            user_id=user_id,
+            role=role,
+            content=content
         )
         self._db.add(message)
         await self._db.commit()
         await self._db.refresh(message)
-        return self._to_response(message)
+        return message
     
     async def show_last_n_messages(
             self, 
-            user: User, 
+            user_id: int, 
             limit: int
-            ) -> list[ChatResponse]:
+            ) -> list[ChatMessage]:
         result = await self._db.scalars(select(ChatMessage)
-                                .where(ChatMessage.user_id == user.id)
-                                .order_by(ChatMessage.id.desc())
+                                .where(ChatMessage.user_id == user_id)
+                                .order_by(ChatMessage.created_at.desc())
                                 .limit(limit))
-        messages = result.all()
-        messages.reverse()
-        return [self._to_response(message) for message in messages]
+        return list(reversed(result.all()))
     
-    async def delete_chat_history(self, user: User) -> None:
+    async def delete_chat_history(self, user_id: int) -> None:
         await self._db.execute(
-            delete(ChatMessage).where(ChatMessage.user_id == user.id)
+            delete(ChatMessage).where(ChatMessage.user_id == user_id)
         )
         await self._db.commit()
