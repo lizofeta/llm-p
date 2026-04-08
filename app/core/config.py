@@ -16,8 +16,6 @@ class Settings(BaseSettings):
     env: str = 'dev'
     app_debug : bool = True
 
-    chat_history_limit: int = 20
-
     # JWT
     jwt_secret: str
     jwt_alg: str

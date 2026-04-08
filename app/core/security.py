@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, timezone
 
 from jose import jwt, ExpiredSignatureError, JWTError
 from passlib.context import CryptContext
+from app.core.errors import UnauthorizedError
 
 # создаем менеджер хеширования паролей 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -47,7 +48,7 @@ def decode_access_token(
             algorithms=[algorithm]
         )
     except ExpiredSignatureError as e:
-        raise ValueError("Токен истёк") from e 
+        raise UnauthorizedError("Токен истёк") from e 
     except JWTError as e:
-        raise ValueError("Некорректный токен") from e
+        raise UnauthorizedError("Некорректный токен") from e
     

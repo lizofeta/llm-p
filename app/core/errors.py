@@ -35,9 +35,12 @@ class NotFoundError(LLMPError):
 
 class ExternalServiceError(LLMPError):
     """ Ошибка при обращении к внешнему сервису """
-    def __init__(self, service: str, reason: str):
-        message = f"Ошибка при обращении к сервису '{service}': {reason}"
+    def __init__(self, service: str, detail: str):
+        message = f"Ошибка обращения к сервису '{service}'"
         super().__init__(message)
+
+class ExternalServiceTimeout(ExternalServiceError):
+    pass
 
 # Более узкие ошибки конкретных кейсов
 
