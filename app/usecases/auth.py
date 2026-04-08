@@ -4,7 +4,7 @@ from app.repositories.users import UserStorage
 from app.db.models import User
 from app.core.config import Settings
 from app.core.errors import EmailAlreadyExistsError, NotFoundError, UnauthorizedError
-from app.core.security import hash_password, verify_password, create_access_token, decode_access_token
+from app.core.security import hash_password, verify_password, create_access_token
 
 
 class AuthUseCase:
@@ -33,14 +33,14 @@ class AuthUseCase:
         user = await self._users_repository.get_user_by_email(email)
         if user is None:
             raise UnauthorizedError(
-                f"Неверный email или пароль"
+                f"Неверный логин или пароль"
                 )
         
         if not verify_password(
             plain_password=password, 
             hashed_password=user.password_hash):
             raise UnauthorizedError(
-                "Неверный email или пароль"
+                "Неверный логин или пароль"
                 )
         
         access_token = create_access_token(
@@ -58,25 +58,3 @@ class AuthUseCase:
         if user is None:
             raise NotFoundError("Пользователь не найден")
         return user
-    
-    async def get_current_user(self, token: str) -> User:
-        try:
-            payload = decode_access_token(
-                token=token,
-                secret=self._settings.jwt_secret,
-                algorithm=self._settings.jwt_alg
-                )
-        except ValueError as e:
-            raise UnauthorizedError() from e 
-        
-        user_id = payload.get("sub")
-        token_role = payload.get("role")
-        if not user_id or not token_role:
-            raise UnauthorizedError("Некорректный payload токена")
-        
-        db_user = await self.get_user_by_id(int(user_id))
-        
-        if db_user.role != token_role:
-            raise UnauthorizedError("Роль в токене не совпадает с ролью в БД")
-        
-        return db_user

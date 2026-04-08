@@ -3,7 +3,7 @@
 import httpx 
 from typing import Any 
 
-from app.core.errors import ExternalServiceError
+from app.core.errors import ExternalServiceError, ExternalServiceTimeout
 from app.core.config import Settings
 
 class OpenRouterClient:
@@ -25,11 +25,13 @@ class OpenRouterClient:
     async def chat_completion(
             self,
             messages: list[dict[str, str]],
+            temperature: float,
             timeout: int = 20
             ) -> dict[str, Any]:
         payload = {
             "model": self._model,
-            "messages": messages
+            "messages": messages,
+            "temperature": temperature
         }
 
         url = f"{self._base_url}/chat/completions"
@@ -42,12 +44,12 @@ class OpenRouterClient:
                     json=payload
                 )
         except httpx.RequestError as e:
-            raise ExternalServiceError(f"Ошибка сети: {e}")
+            raise ExternalServiceTimeout() from e
         
         if response.status_code != 200:
             raise ExternalServiceError(
-                f"Ошибка OpenRouter {response.status_code}: {response.text}"
-                )
+                service="OpenRouter"
+            )
         
         try:
             return response.json()
