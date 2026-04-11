@@ -48,11 +48,13 @@ class OpenRouterClient:
         
         if response.status_code != 200:
             raise ExternalServiceError(
-                service="OpenRouter"
-            )
+                f"Ошибка OpenRouter: {response.text}"
+    )
         
         try:
             return response.json()
         except ValueError:
-            raise ExternalServiceError("Некорректный JSON в ответе OpenRouter")
+            raise ExternalServiceError(
+                "Некорректный JSON в ответе OpenRouter"
+            )
         

@@ -65,3 +65,4 @@ async def delete(
     chat_usecase: ChatUseCaseDep
 ) -> None:
     await chat_usecase.delete_history(user_id)
+    return "История диалога успешно удалена"

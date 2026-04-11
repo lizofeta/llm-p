@@ -47,7 +47,7 @@ async def login(
             email=data.username, 
             password=data.password
         )
-        return TokenResponse(**token)
+        return TokenResponse(access_token=token)
     except UnauthorizedError as e:
         raise HTTPException(
             status_code=401,

@@ -5,7 +5,7 @@ from typing import Optional
 
 from datetime import datetime 
 
-from app.core.enums import Role
+from app.core.enums import MessageRole
 
 
 class ChatRequest(BaseModel):
@@ -19,7 +19,7 @@ class ChatResponse(BaseModel):
     answer: str
 
 class ChatHistoryResponse(BaseModel):
-    role: Role
+    role: MessageRole
     content: str
     created_at: datetime
 

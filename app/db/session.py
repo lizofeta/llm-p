@@ -13,7 +13,7 @@ from app.core.config import get_settings
 
 # Настройки
 settings = get_settings()
-DB_URL = get_db_url()
+DB_URL = get_db_url(settings)
 
 # async engine
 engine = create_async_engine(

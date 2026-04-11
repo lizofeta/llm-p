@@ -33,7 +33,7 @@ class AuthUseCase:
         user = await self._users_repository.get_user_by_email(email)
         if user is None:
             raise UnauthorizedError(
-                f"Неверный логин или пароль"
+                "Неверный логин или пароль"
                 )
         
         if not verify_password(

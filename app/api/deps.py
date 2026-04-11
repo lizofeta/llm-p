@@ -48,8 +48,7 @@ def get_chat_usecase(
 ) -> ChatUseCase:
     return ChatUseCase(
         chat_repository=chats_repo,
-        or_client=or_client,
-        settings=settings
+        or_client=or_client
     )
 
 ChatUseCaseDep = Annotated[ChatUseCase, Depends(get_chat_usecase)]
