@@ -48,7 +48,7 @@ class OpenRouterClient:
         
         if response.status_code != 200:
             raise ExternalServiceError(
-                f"Ошибка OpenRouter: {response.text}"
+                f"Ошибка OpenRouter"
     )
         
         try:
